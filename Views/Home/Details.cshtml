@@ -1,0 +1,24 @@
+﻿@model SearchResultItem 
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="text-center">
+    <h1 class="display-4">Details</h1>
+    @if (Model != null)
+    {
+        <div class="card" style="width: 18rem;">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img class="card-img-top" src="@Model.ImageUrl" alt="Card image cap">
+            }
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+                <p class="card-text">@Model.Description</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Item not found.</p>
+    }
+</div>

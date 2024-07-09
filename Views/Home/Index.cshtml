@@ -1,0 +1,56 @@
+﻿<div class="text-center">
+    <h1 class="display-4">Search</h1>
+    <div class="form-group">
+        <select id="search-filter" class="form-control">
+            <option value="all">All</option>
+            <option value="products">Products</option>
+            <option value="categories">Categories</option>
+        </select>
+    </div>
+    <input type="text" id="search-input" placeholder="Search..." class="form-control" />
+    <div id="search-results" class="dropdown-menu" style="display: block; position: absolute; width: 100%;"></div>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function performSearch() {
+                let query = $('#search-input').val();
+                let filter = $('#search-filter').val();
+                if (query.length >= 3) {
+                    $.ajax({
+                        url: '/api/search',
+                        type: 'GET',
+                        data: { query: query, filter: filter },
+                        success: function (data) {
+                            let results = $('#search-results');
+                            results.empty();
+                            if (data.length > 0) {
+                                data.forEach(item => {
+                                    if (item.imageUrl) { // Check if item has an image
+                                        results.append(`
+                                                        <a class="dropdown-item" href="/Home/Details/${item.id}">
+                                                    <img src="${item.imageUrl}" alt="${item.name}" style="width:50px; height:50px;"/>
+                                                    ${item.name || item.description}
+                                                </a>
+                                               `);
+                                    } else {
+                                        results.append(`<a class="dropdown-item" href="/Home/Details/${item.id}">${item.name || item.description}</a>`);
+                                    }
+                                });
+                            } else {
+                                results.append('<a class="dropdown-item">No results found</a>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#search-results').empty();
+                }
+            }
+
+            $('#search-input').on('input', performSearch);
+            $('#search-filter').on('change', performSearch);
+        });
+    </script>
+}
